@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web Proxy (Hosted)</title>
+<title>Web Fetcher</title>
 <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     input { width: 400px; padding: 8px; }
@@ -12,8 +11,7 @@
 </style>
 </head>
 <body>
-<h1>Web Proxy (Public CORS Proxy)</h1>
-<p>⚠ Uses <a href="https://corsproxy.io" target="_blank">corsproxy.io</a> — do not send sensitive data.</p>
+<h1>Web Fetcher (Public CORS Service)</h1>
 <input type="text" id="urlInput" placeholder="Enter URL (e.g., https://example.com)">
 <button id="fetchBtn">Fetch</button>
 <div id="output"></div>
@@ -24,22 +22,23 @@ document.getElementById('fetchBtn').addEventListener('click', async () => {
     const output = document.getElementById('output');
 
     if (!url) {
-        output.innerHTML = "<p style='color:red;'>Please enter a URL.</p>";
+        output.innerHTML = "Please enter a URL.";
         return;
     }
 
     output.textContent = "Loading...";
 
     try {
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-        const response = await fetch(proxyUrl);
+        // AllOrigins API — no "proxy" in domain
+        const apiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+        const response = await fetch(apiUrl);
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const text = await response.text();
         output.textContent = text;
     } catch (err) {
-        output.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+        output.innerHTML = `Error: ${err.message}`;
     }
 });
 </script>

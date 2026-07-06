@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Proxy (Hosted)</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input { width: 400px; padding: 8px; }
+    button { padding: 8px 15px; margin-left: 5px; }
+    #output { margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 200px; overflow: auto; background: #f9f9f9; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Web Proxy (Public CORS Proxy)</h1>
+<p>⚠ Uses <a href="https://corsproxy.io" target="_blank">corsproxy.io</a> — do not send sensitive data.</p>
+<input type="text" id="urlInput" placeholder="Enter URL (e.g., https://example.com)">
+<button id="fetchBtn">Fetch</button>
+<div id="output"></div>
+
+<script>
+document.getElementById('fetchBtn').addEventListener('click', async () => {
+    const url = document.getElementById('urlInput').value.trim();
+    const output = document.getElementById('output');
+
+    if (!url) {
+        output.innerHTML = "<p style='color:red;'>Please enter a URL.</p>";
+        return;
+    }
+
+    output.textContent = "Loading...";
+
+    try {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+        const response = await fetch(proxyUrl);
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const text = await response.text();
+        output.textContent = text;
+    } catch (err) {
+        output.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    }
+});
+</script>
+</body>
+</html>
